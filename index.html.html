@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventeny RICE Score Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --eventeny-blue: #008080;
+            --eventeny-dark: #343a40;
+            --eventeny-light-gray: #f8f9fa;
+            --eventeny-medium-gray: #e9ecef;
+            --text-color: #495057;
+            --border-color: #ced4da;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--eventeny-light-gray);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: var(--text-color);
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 450px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: #008080;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 1.8em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--eventeny-dark);
+        }
+
+        input[type="number"],
+        select {
+            width: calc(100% - 22px);
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1em;
+            color: var(--text-color);
+            background-color: #fff;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            position: relative;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            border-color: var(--eventeny-blue);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            font-size: 0.8em;
+            color: var(--text-color);
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            position: absolute;
+            pointer-events: none;
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--eventeny-medium-gray);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--eventeny-dark);
+        }
+
+        #result span {
+            color: var(--eventeny-blue);
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Eventeny RICE Calculator</h1>
+        
+        <div class="input-group">
+            <label for="reach">Reach</label>
+            <input type="number" id="reach" placeholder="e.g., 5000 users/month">
+        </div>
+        
+        <div class="input-group">
+            <label for="impact">Impact</label>
+            <div class="select-wrapper">
+                <select id="impact">
+                    <option value="0.25">0.25 - Minimal</option>
+                    <option value="0.5">0.5 - Low</option>
+                    <option value="1">1 - Medium</option>
+                    <option value="2">2 - High</option>
+                    <option value="3">3 - Massive</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="confidence">Confidence (%)</label>
+            <input type="number" id="confidence" placeholder="e.g., 80 (for 80%)">
+        </div>
+        
+        <div class="input-group">
+            <label for="effort">Effort (people + weeks)</label>
+            <input type="number" id="effort" placeholder="e.g., 6 (for 2 people x 3 weeks)">
+        </div>
+
+        <div id="result">
+            RICE Score: <span>0.00</span>
+        </div>
+    </div>
+
+    <script>
+        function calculateRICE() {
+            const reach = parseFloat(document.getElementById('reach').value) || 0;
+            const impact = parseFloat(document.getElementById('impact').value) || 0;
+            const confidence = parseFloat(document.getElementById('confidence').value) || 0;
+            const effort = parseFloat(document.getElementById('effort').value) || 1;
+
+            let score = 0;
+            const confidenceDecimal = confidence / 100; 
+
+            if (effort > 0) {
+                score = (reach * impact * confidenceDecimal) / effort;
+            }
+            
+            if (isNaN(score) || !isFinite(score)) {
+                score = 0;
+            }
+
+            document.querySelector('#result span').textContent = score.toFixed(2);
+        }
+
+        document.getElementById('reach').addEventListener('input', calculateRICE);
+        document.getElementById('impact').addEventListener('change', calculateRICE);
+        document.getElementById('confidence').addEventListener('input', calculateRICE);
+        document.getElementById('effort').addEventListener('input', calculateRICE);
+
+        calculateRICE();
+    </script>
+
+</body>
+</html>
